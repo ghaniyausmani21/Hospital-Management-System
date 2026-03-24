@@ -1,0 +1,416 @@
+--CREATE TABLE Hospital (
+  --  HospitalName VARCHAR(200) PRIMARY KEY,
+    --Address VARCHAR(500),
+    --Phone VARCHAR(20),
+    --Email VARCHAR(100),
+    --TotalBeds INT
+--);
+
+--CREATE TABLE Department (
+  --  DepartmentID INT PRIMARY KEY IDENTITY(1,1),
+    --DepartmentName VARCHAR(100) NOT NULL,
+    --DepartmentHeadID INT NULL,
+    --HospitalName VARCHAR(200) NOT NULL,
+    --PhoneExtension VARCHAR(10),
+    --FloorNumber INT,
+    --CONSTRAINT FK_Department_Hospital FOREIGN KEY (HospitalName) 
+      --  REFERENCES Hospital(HospitalName) ON DELETE CASCADE
+--);
+
+--CREATE TABLE Doctor (
+  --  DoctorID INT PRIMARY KEY IDENTITY(1,1),
+    --Name VARCHAR(200) NOT NULL,
+    --Specialty VARCHAR(100),
+    --ContactNumber VARCHAR(20),
+    --Email VARCHAR(100),
+   -- DepartmentID INT,
+   -- CONSTRAINT FK_Doctor_Department FOREIGN KEY (DepartmentID) 
+    --    REFERENCES Department(DepartmentID) ON DELETE SET NULL
+--);
+
+--select * from hospital;
+--select * from department;
+--select * from doctor;
+
+--ALTER TABLE Department
+--ADD CONSTRAINT FK_Department_Doctor FOREIGN KEY (DepartmentHeadID) 
+--REFERENCES Doctor(DoctorID) ON DELETE SET NULL;
+--select * from department;
+
+--CREATE TABLE Patient (
+--PatientID INT PRIMARY KEY IDENTITY(1,1),
+--Name VARCHAR(200) NOT NULL,
+--DateOfBirth DATE,
+--Gender CHAR(1) CHECK (Gender IN ('M', 'F', 'O')),
+--ContactNumber VARCHAR(20),
+--Age AS DATEDIFF(YEAR, DateOfBirth, GETDATE()) - 
+--CASE WHEN DATEADD(YEAR, DATEDIFF(YEAR, DateOfBirth, GETDATE()), DateOfBirth) > GETDATE() 
+--THEN 1 ELSE 0 END,
+--Address VARCHAR(500)
+--);
+
+--CREATE TABLE Appointment (
+--AppointmentID INT PRIMARY KEY IDENTITY(1,1),
+--PatientID INT NOT NULL,
+--DoctorID INT NOT NULL,
+--AppointmentDate DATE,
+--AppointmentTime TIME,
+--CONSTRAINT FK_Appointment_Patient FOREIGN KEY (PatientID) 
+--REFERENCES Patient(PatientID) ON DELETE CASCADE,
+--CONSTRAINT FK_Appointment_Doctor FOREIGN KEY (DoctorID) 
+--REFERENCES Doctor(DoctorID) ON DELETE CASCADE
+--);
+
+--CREATE TABLE MedicalRecord (
+--RecordID INT PRIMARY KEY IDENTITY(1,1),
+--PatientID INT NOT NULL,
+--DoctorID INT NOT NULL,
+--Diagnosis VARCHAR(500),
+--Prescription VARCHAR(1000),
+--RecordDate DATE DEFAULT GETDATE(),
+--FollowUpDate DATE,
+--CONSTRAINT FK_MedicalRecord_Patient FOREIGN KEY (PatientID) 
+ --REFERENCES Patient(PatientID) ON DELETE CASCADE,
+  --CONSTRAINT FK_MedicalRecord_Doctor FOREIGN KEY (DoctorID) 
+   --REFERENCES Doctor(DoctorID) ON DELETE CASCADE
+--);
+
+--CREATE TABLE Test (
+--TestID INT PRIMARY KEY IDENTITY(1,1),
+--TestName VARCHAR(200) NOT NULL,
+--PatientID INT NOT NULL,
+--DoctorID INT NOT NULL,
+--TestDate DATE DEFAULT GETDATE(),
+--Result VARCHAR(1000),
+--Cost DECIMAL(10,2),
+--CONSTRAINT FK_Test_Patient FOREIGN KEY (PatientID) 
+  --REFERENCES Patient(PatientID) ON DELETE CASCADE,
+--CONSTRAINT FK_Test_Doctor FOREIGN KEY (DoctorID) 
+  --REFERENCES Doctor(DoctorID) ON DELETE CASCADE
+--);
+
+--CREATE TABLE Room (
+  --  RoomNumber VARCHAR(20) PRIMARY KEY,
+    --RoomType VARCHAR(50) CHECK (RoomType IN ('General', 'ICU', 'CCU', 'Private', 'Emergency')),
+    --PatientID INT,
+    --Status VARCHAR(20) DEFAULT 'Available' CHECK (Status IN ('Available', 'Occupied', 'Maintenance')),
+    --DepartmentID INT,
+    --HospitalName VARCHAR(200) NOT NULL,
+    --CONSTRAINT FK_Room_Patient FOREIGN KEY (PatientID) 
+      --  REFERENCES Patient(PatientID) ON DELETE SET NULL,
+    --CONSTRAINT FK_Room_Department FOREIGN KEY (DepartmentID) 
+      --  REFERENCES Department(DepartmentID) ON DELETE SET NULL,
+   -- CONSTRAINT FK_Room_Hospital FOREIGN KEY (HospitalName) 
+     --   REFERENCES Hospital(HospitalName) ON DELETE CASCADE
+--);
+
+--CREATE TABLE Reception (
+  --  ReceptionID INT PRIMARY KEY IDENTITY(1,1),
+    --StaffName VARCHAR(200) NOT NULL,
+    --Shift VARCHAR(20) CHECK (Shift IN ('Morning', 'Evening', 'Night')),
+    --CounterNumber VARCHAR(10),
+    --ContactNumber VARCHAR(20)
+--);
+
+--CREATE TABLE Billing (
+  --  BillID INT PRIMARY KEY IDENTITY(1,1),
+    --PatientID INT NOT NULL,
+    --TotalAmount DECIMAL(12,2),
+    --BillDate DATE DEFAULT GETDATE(),
+    --CONSTRAINT FK_Billing_Patient FOREIGN KEY (PatientID) 
+      --  REFERENCES Patient(PatientID) ON DELETE CASCADE
+--);
+
+--CREATE TABLE Payment (
+  --  PaymentID INT PRIMARY KEY IDENTITY(1,1),
+    --PatientID INT NOT NULL,
+    --BillID INT NOT NULL,
+    --PaymentMode VARCHAR(50) CHECK (PaymentMode IN ('Cash', 'Credit Card', 'Debit Card', 'UPI', 'Insurance')),
+    --Amount DECIMAL(12,2),
+    --PaymentDate DATE DEFAULT GETDATE(),
+    --Status VARCHAR(20) DEFAULT 'Pending' CHECK (Status IN ('Pending', 'Completed', 'Failed', 'Refunded')),
+    --CONSTRAINT FK_Payment_Patient FOREIGN KEY (PatientID) 
+      --  REFERENCES Patient(PatientID) ON DELETE CASCADE,
+    --CONSTRAINT FK_Payment_Billing FOREIGN KEY (BillID) 
+      --  REFERENCES Billing(BillID) ON DELETE CASCADE
+--);
+
+--CREATE TABLE Medication (
+  --  MedicineName VARCHAR(200) PRIMARY KEY,
+    --Dosage VARCHAR(100)
+--);
+
+--select * from patient;
+--select * from appointment;
+--select * from medicalrecord;
+
+
+--select * from reception;
+
+--select * from billing;
+--select * from medication;
+
+--select * from test;
+
+--select * from Payment;
+
+--INSERT INTO Hospital (HospitalName, Address, Phone, Email, TotalBeds)
+--VALUES 
+--('medicare hospital', 'bahadurabad', '021-273589', 'info@medicare.com', 200),
+--('ziauddin hospital', 'defence', '021-36889', 'info@ziauddin.com', 750);
+
+--select * from hospital;
+
+--INSERT INTO Department (DepartmentName, HospitalName, PhoneExtension, FloorNumber)
+--VALUES 
+--('Cardiology', 'medicare', '101', 3),
+--('Neurology', 'medicare', '102', 2),
+--('Gynae', 'ziauddin', '201', 5),
+--('Orthopedics', 'ziauddin', '202', 4);
+
+--INSERT INTO Doctor (Name, Specialty, ContactNumber, Email, DepartmentID)
+--VALUES 
+--('Dr. Taha', 'Cardiologist', '555-1001', 'taha.@hospital.com', 1),
+--('Dr. Salahuddin', 'Neurologist', '555-1002', 'salahuddin.@hospital.com', 2),
+--('Dr. Usmani', 'Pediatrician', '555-2001', 'usmani.@hospital.com', 3),
+--('Dr. Haris', 'Orthopedic Surgeon', '555-2002', 'haris.@hospital.com', 4);
+
+--UPDATE Department SET DepartmentHeadID = 1 WHERE DepartmentID = 1;
+--UPDATE Department SET DepartmentHeadID = 2 WHERE DepartmentID = 2;
+--UPDATE Department SET DepartmentHeadID = 3 WHERE DepartmentID = 3;
+--UPDATE Department SET DepartmentHeadID = 4 WHERE DepartmentID = 4;
+
+--INSERT INTO Patient (Name, DateOfBirth, Gender, ContactNumber, Address)
+--VALUES 
+--('hasan', '1980-03-15', 'M', '555-3001', '789 gulshan iqbal, karachi'),
+--('ali', '1992-07-22', 'M', '555-3002', '456 hussainabad, karachi'),
+--('riaz', '1975-11-30', 'M', '555-3003', '123 Metropolis, karachi'),
+--('mohsin', '1988-05-18', 'M', '555-3004', '321 defence, karachi');
+
+--select * from patient;
+
+--INSERT INTO Appointment (PatientID, DoctorID, AppointmentDate, AppointmentTime)
+--VALUES 
+--(1, 1, '2025-01-15', '10:00:00'),
+--(2, 2, '2025-01-15', '11:30:00'),
+--(3, 3, '2024-01-16', '09:00:00'),
+--(4, 4, '2023-01-16', '14:00:00');
+
+--INSERT INTO MedicalRecord (PatientID, DoctorID, Diagnosis, Prescription, FollowUpDate)
+--VALUES 
+--(1, 1, 'Hypertension Stage 1', 'Lisinopril 10mg daily', '2025-02-15'),
+--(2, 2, 'Migraine with aura', 'Sumatriptan 50mg as needed', '2025-02-22'),
+--(3, 3, 'Common Cold', 'Acetaminophen 500mg every 6 hours', '2024-01-23'),
+--(4, 4, 'Sprained Ankle', 'Ibuprofen 400mg every 8 hours, Rest', '2023-02-01');
+
+--INSERT INTO Test (TestName, PatientID, DoctorID, Result, Cost)
+--VALUES 
+--('Complete Blood Count', 1, 1, 'Normal', 150.00),
+--('MRI Brain', 2, 2, 'No abnormalities detected', 800.00),
+--('Throat Culture', 3, 3, 'Negative for strep', 75.00),
+--('X-Ray Ankle', 4, 4, 'No fracture, soft tissue swelling', 120.00);
+
+--INSERT INTO Room (RoomNumber, RoomType, PatientID, Status, DepartmentID, HospitalName)
+--VALUES 
+--('301A', 'Private', 1, 'Occupied', 1, 'medicare hospital'),
+--('302B', 'General', NULL, 'Available', 1, 'ziauddin hospital'),
+--('ICU-101', 'ICU', 2, 'Occupied', 2, 'medicare hospital'),
+--('PED-201', 'General', 3, 'Occupied', 3, 'ziauddin');
+
+--INSERT INTO Reception (StaffName, Shift, CounterNumber, ContactNumber)
+--VALUES 
+--('raza', 'Morning', 'Counter 1', '555-4001'),
+--('ali', 'Evening', 'Counter 2', '555-4002'),
+--('mehdi', 'Night', 'Counter 3', '555-4003');
+
+--select * from reception;
+
+--INSERT INTO Billing (PatientID, TotalAmount, BillDate)
+--VALUES 
+--(1, 500.00, '2025-01-15'),
+--(2, 1200.00, '2025-01-15'),
+--(3, 200.00, '2024-01-16'),
+--(4, 450.00, '2023-01-16
+
+--select * from billing;
+
+--INSERT INTO Payment (PatientID, BillID, PaymentMode, Amount, Status)
+--VALUES 
+--(1, 1, 'Credit Card', 500.00, 'Completed'),
+--(2, 2, 'Insurance', 1200.00, 'Completed'),
+--(3, 3, 'Cash', 200.00, 'Completed'),
+--(4, 4, 'Debit Card', 450.00, 'Completed');
+
+--INSERT INTO Medication (MedicineName, Dosage)
+--VALUES 
+--('Lisinopril', '10mg'),
+--('Sumatriptan', '50mg'),
+--('Acetaminophen', '500mg'),
+--('Ibuprofen', '400mg'),
+--('Amoxicillin', '250mg'),
+--('Metformin', '500mg');
+
+--select * from medication;
+
+--CREATE VIEW vw_PatientDetails AS
+--SELECT 
+  --  p.PatientID,
+    --p.Name AS PatientName,
+    --p.Gender,
+    --p.Age,
+    --p.ContactNumber,
+    --p.Address,
+    --COUNT(a.AppointmentID) AS TotalAppointments,
+    --MAX(a.AppointmentDate) AS LastVisit
+--FROM Patient p
+--LEFT JOIN Appointment a ON p.PatientID = a.PatientID
+--GROUP BY p.PatientID, p.Name, p.Gender, p.Age, p.ContactNumber, p.Address;
+
+--CREATE VIEW vw_DoctorSchedule AS
+--SELECT 
+  --  d.DoctorID,
+    --d.Name AS DoctorName,
+    --d.Specialty,
+    --dep.DepartmentName,
+    --a.AppointmentDate,
+    --a.AppointmentTime,
+    --p.Name AS PatientName
+--FROM Doctor d
+--INNER JOIN Department dep ON d.DepartmentID = dep.DepartmentID
+--INNER JOIN Appointment a ON d.DoctorID = a.DoctorID
+--INNER JOIN Patient p ON a.PatientID = p.PatientID;
+
+--CREATE VIEW vw_HospitalOccupancy AS
+--SELECT 
+--h.HospitalName,
+  --  h.TotalBeds,
+    --COUNT(r.RoomNumber) AS TotalRooms,
+    --SUM(CASE WHEN r.Status = 'Occupied' THEN 1 ELSE 0 END) AS OccupiedRooms,
+--CAST(SUM(CASE WHEN r.Status = 'Occupied' THEN 1 ELSE 0 END) * 100.0 / COUNT(r.RoomNumber) AS DECIMAL(5,2)) AS OccupancyRate
+--FROM Hospital h
+--LEFT JOIN Room r ON h.HospitalName = r.HospitalName
+--GROUP BY h.HospitalName, h.TotalBeds;
+
+--CREATE PROCEDURE sp_BookAppointment
+  --  @PatientID INT,
+    --@DoctorID INT,
+    --@AppointmentDate DATE,
+    --@AppointmentTime TIME
+--AS
+--BEGIN
+  --  SET NOCOUNT ON;
+    
+    ---IF EXISTS (
+       -- SELECT 1 FROM Appointment 
+       -- WHERE DoctorID = @DoctorID 
+        --AND AppointmentDate = @AppointmentDate 
+        --AND AppointmentTime = @AppointmentTime
+   -- )
+    --BEGIN
+      --  PRINT 'Doctor is not available at this time slot.';
+        --RETURN -1;
+    --END
+
+    --INSERT INTO Appointment (PatientID, DoctorID, AppointmentDate, AppointmentTime)
+    --VALUES (@PatientID, @DoctorID, @AppointmentDate, @AppointmentTime);
+    --PRINT 'Appointment booked successfully.';
+    --RETURN SCOPE_IDENTITY();
+--END
+
+--CREATE PROCEDURE sp_GenerateBill
+  --  @PatientID INT,
+    --@TotalAmount DECIMAL(12,2)
+--AS
+--BEGIN
+  --  SET NOCOUNT ON;
+    --DECLARE @BillID INT;
+   --INSERT INTO Billing (PatientID, TotalAmount, BillDate)
+    --VALUES (@PatientID, @TotalAmount, GETDATE());
+    --SET @BillID = SCOPE_IDENTITY();
+   --SELECT 
+     --   @BillID AS BillID,
+       -- p.Name AS PatientName,
+        --b.TotalAmount,
+        --b.BillDate
+    --FROM Billing b
+    --INNER JOIN Patient p ON b.PatientID = p.PatientID
+    --WHERE b.BillID = @BillID;
+--END
+
+--CREATE PROCEDURE sp_GetPatientMedicalHistory
+  --  @PatientID INT
+--AS
+--BEGIN
+  --  SET NOCOUNT ON;
+    --SELECT 
+      --  mr.RecordDate,
+        --d.Name AS DoctorName,
+        --d.Specialty,
+        --mr.Diagnosis,
+        --mr.Prescription,
+        --mr.FollowUpDate
+    --FROM MedicalRecord mr
+    --INNER JOIN Doctor d ON mr.DoctorID = d.DoctorID
+    --WHERE mr.PatientID = @PatientID
+    --ORDER BY mr.RecordDate DESC;
+    --SELECT 
+      --  t.TestDate,
+        --t.TestName,
+        --d.Name AS DoctorName,
+        --t.Result,
+        --t.Cost
+    --FROM Test t
+    --INNER JOIN Doctor d ON t.DoctorID = d.DoctorID
+    --WHERE t.PatientID = @PatientID
+    --ORDER BY t.TestDate DESC;
+--END
+
+--CREATE TRIGGER trg_AuditPayment
+--ON Payment
+--AFTER INSERT, UPDATE
+--AS
+--BEGIN
+  --  SET NOCOUNT ON;
+--PRINT 'Payment transaction recorded/updated.';
+--END
+--SELECT d.Name, d.Specialty, d.ContactNumber, dep.DepartmentName
+--FROM Doctor d
+--INNER JOIN Department dep ON d.DepartmentID = dep.DepartmentID
+--WHERE dep.DepartmentName = 'Cardiology';
+--SELECT r.RoomNumber, r.RoomType, d.DepartmentName
+--FROM Room r
+--INNER JOIN Department d ON r.DepartmentID = d.DepartmentID
+--WHERE r.Status = 'Available';
+
+--SELECT 
+  --  a.AppointmentTime,
+    --p.Name AS PatientName,
+    --d.Name AS DoctorName,
+    --d.Specialty
+--FROM Appointment a
+--INNER JOIN Patient p ON a.PatientID = p.PatientID
+--INNER JOIN Doctor d ON a.DoctorID = d.DoctorID
+--WHERE a.AppointmentDate = CAST(GETDATE() AS DATE)
+--ORDER BY a.AppointmentTime;
+
+--SELECT 
+  --  SUM(p.Amount) AS TotalRevenue,
+    --COUNT(p.PaymentID) AS TotalTransactions,
+    --AVG(p.Amount) AS AveragePayment
+--FROM Payment p
+--WHERE p.Status = 'Completed';
+
+--SELECT 
+  --  p.Name AS PatientName,
+    --p.ContactNumber,
+    --b.TotalAmount,
+    --b.BillDate,
+    --ISNULL(SUM(pay.Amount), 0) AS AmountPaid,
+    --b.TotalAmount - ISNULL(SUM(pay.Amount), 0) AS BalanceDue
+--FROM Billing b
+--INNER JOIN Patient p ON b.PatientID = p.PatientID
+--LEFT JOIN Payment pay ON b.BillID = pay.BillID AND pay.Status = 'Completed'
+--GROUP BY p.Name, p.ContactNumber, b.TotalAmount, b.BillDate, b.PatientID
+--HAVING b.TotalAmount - ISNULL(SUM(pay.Amount), 0) > 0;
+
+--PRINT 'Hospital Management Database created successfully with all tables, sample data, and procedures.';
